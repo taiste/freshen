@@ -138,8 +138,12 @@ class FreshenNosePlugin(Plugin):
                 from freshen.test.async import TwistedTestCase
                 self._test_class = TwistedTestCase
             except ImportError:
-                from freshen.test.pyunit import PyunitTestCase
-                self._test_class = PyunitTestCase
+                try:
+                    from freshen.test.djangounit import DjangoTestCase
+                    self._test_class = DjangoTestCase
+                except ImportError:
+                    from freshen.test.pyunit import PyunitTestCase
+                    self._test_class = PyunitTestCase
         return type(feature.name, (self._test_class, ), {scenario.name: lambda self: self.runScenario()})
 
     def loadTestsFromFile(self, filename, indexes=[]):
